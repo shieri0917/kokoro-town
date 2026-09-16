@@ -1,0 +1,19 @@
+{
+  "name": "こころタウン",
+  "short_name": "こころタウン",
+  "description": "AIとおしゃべりしながら、自分のペースで前に進むためのメンタルケアアプリ",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eaf7f2",
+  "theme_color": "#8fd9c4",
+  "icons": [
+    {
+      "src": "assets/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

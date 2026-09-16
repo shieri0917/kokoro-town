@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<meta name="theme-color" content="#8fd9c4" />
+<title>こころタウン</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="assets/icon.png" />
+<link rel="icon" href="assets/icon.png" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ==================== 起動ローディング ==================== -->
+<div id="screen-boot" class="screen active">
+  <div class="boot-wrap">
+    <img src="assets/ghost.png" class="boot-ghost" alt="こころおばけ" />
+    <p class="boot-text">こころタウンをじゅんびしています…</p>
+    <div class="boot-bar"><div id="boot-bar-fill" class="boot-bar-fill"></div></div>
+    <p id="boot-detail" class="boot-detail">はじめての起動はAIモデルのダウンロードに時間がかかります</p>
+    <button id="btn-skip-ai" class="btn-text-link" hidden>AIをつかわずに始める</button>
+  </div>
+</div>
+
+<!-- ==================== ホーム（町） ==================== -->
+<div id="screen-home" class="screen">
+  <header class="town-header">
+    <h1 class="town-title">こころタウン</h1>
+    <button id="btn-open-settings" class="icon-btn" aria-label="設定">⚙️</button>
+  </header>
+
+  <div class="town-view">
+    <div class="town-sky"></div>
+    <div class="town-hill"></div>
+    <div id="town-characters" class="town-characters">
+      <img id="char-ghost" src="assets/ghost.png" class="town-char town-char-ghost" alt="こころおばけ" />
+      <img id="char-rabbit" src="assets/rabbit.png" class="town-char town-char-rabbit" alt="ここうさ" />
+      <img id="char-cat" src="assets/cat.png" class="town-char town-char-cat" alt="きぬ" />
+    </div>
+    <div class="town-ground"></div>
+  </div>
+
+  <div class="greeting-bubble" id="greeting-bubble">
+    <p id="greeting-text">きょうもおつかれさま。</p>
+  </div>
+
+  <div class="level-strip">
+    <span class="level-badge" id="level-badge">Lv.1</span>
+    <div class="level-bar"><div id="level-bar-fill" class="level-bar-fill"></div></div>
+    <span class="point-count" id="point-count">0 pt</span>
+  </div>
+
+  <nav class="home-menu">
+    <button class="menu-card" data-nav="chat">
+      <span class="menu-icon">💬</span><span>そうだんする</span>
+    </button>
+    <button class="menu-card" data-nav="selfcare">
+      <span class="menu-icon">🌿</span><span>セルフケア</span>
+    </button>
+    <button class="menu-card" data-nav="lifedesign">
+      <span class="menu-icon">🗺️</span><span>じぶん設計</span>
+    </button>
+    <button class="menu-card" data-nav="rewards">
+      <span class="menu-icon">🎁</span><span>ごほうび</span>
+    </button>
+  </nav>
+
+  <button id="btn-nav-body" class="floating-body-btn">🩷 きょうの体調メモ</button>
+</div>
+
+<!-- ==================== チャット（そうだん） ==================== -->
+<div id="screen-chat" class="screen">
+  <header class="sub-header">
+    <button class="icon-btn back-btn" data-nav="home">←</button>
+    <h2>そうだん</h2>
+    <span class="header-spacer"></span>
+  </header>
+
+  <div class="topic-shortcuts" id="topic-shortcuts">
+    <button class="topic-chip" data-topic="work">💼 しごと</button>
+    <button class="topic-chip" data-topic="love">💗 恋愛・人間関係</button>
+    <button class="topic-chip" data-topic="future">🔭 これから</button>
+    <button class="topic-chip" data-topic="body">🌙 からだ・気分</button>
+    <button class="topic-chip" data-topic="pace">🐾 自分ペース宣言</button>
+    <button class="topic-chip" data-topic="strength">✨ 強み発見</button>
+  </div>
+
+  <div id="chat-log" class="chat-log"></div>
+
+  <div id="crisis-banner" class="crisis-banner" hidden>
+    <p>つらい気持ち、一人で抱えないでね。専門の窓口にも頼っていいんだよ。</p>
+    <ul id="crisis-links"></ul>
+  </div>
+
+  <form id="chat-form" class="chat-input-bar">
+    <input id="chat-input" type="text" placeholder="今日はどんな一日だった？" autocomplete="off" />
+    <button type="submit" class="chat-send-btn" aria-label="送信">↑</button>
+  </form>
+</div>
+
+<!-- ==================== セルフケア ==================== -->
+<div id="screen-selfcare" class="screen">
+  <header class="sub-header">
+    <button class="icon-btn back-btn" data-nav="home">←</button>
+    <h2>セルフケア</h2>
+    <span class="header-spacer"></span>
+  </header>
+
+  <div class="care-list">
+    <button class="care-card" data-care="breath">
+      <span class="care-icon">🫧</span>
+      <div><strong>深呼吸</strong><p>吸って…吐いて…を一緒にゆっくり</p></div>
+    </button>
+    <button class="care-card" data-care="grounding">
+      <span class="care-icon">🌳</span>
+      <div><strong>5-4-3-2-1グラウンディング</strong><p>今ここに意識を戻す</p></div>
+    </button>
+    <button class="care-card" data-care="bodylog">
+      <span class="care-icon">🩷</span>
+      <div><strong>体調メモ</strong><p>周期や睡眠、気になることを記録</p></div>
+    </button>
+  </div>
+
+  <!-- 深呼吸 -->
+  <div id="care-breath" class="care-detail" hidden>
+    <button class="icon-btn back-btn" data-care-back>← セルフケアへ</button>
+    <div class="breath-circle" id="breath-circle"></div>
+    <p id="breath-label" class="breath-label">はじめる をおしてね</p>
+    <button id="btn-breath-toggle" class="btn-primary">はじめる</button>
+  </div>
+
+  <!-- グラウンディング -->
+  <div id="care-grounding" class="care-detail" hidden>
+    <button class="icon-btn back-btn" data-care-back>← セルフケアへ</button>
+    <div id="grounding-step-wrap">
+      <p id="grounding-prompt" class="grounding-prompt"></p>
+      <textarea id="grounding-input" rows="3" placeholder="思いつくものを書いてみてね"></textarea>
+      <button id="btn-grounding-next" class="btn-primary">つぎへ</button>
+    </div>
+    <div id="grounding-done" hidden>
+      <p>おつかれさま。すこし心が今に戻ってきたかな。</p>
+      <button class="btn-primary" data-care-back>もどる</button>
+    </div>
+  </div>
+
+  <!-- 体調メモ -->
+  <div id="care-bodylog" class="care-detail" hidden>
+    <button class="icon-btn back-btn" data-care-back>← セルフケアへ</button>
+    <form id="bodylog-form" class="bodylog-form">
+      <label>今日の体調
+        <select id="bodylog-condition">
+          <option value="good">元気</option>
+          <option value="normal">ふつう</option>
+          <option value="tired">つかれ気味</option>
+          <option value="bad">しんどい</option>
+        </select>
+      </label>
+      <label>睡眠時間（時間）
+        <input id="bodylog-sleep" type="number" min="0" max="24" step="0.5" />
+      </label>
+      <label>生理周期の目安（任意）
+        <select id="bodylog-cycle">
+          <option value="">選択しない</option>
+          <option value="menstrual">生理中</option>
+          <option value="follicular">生理後（低温期）</option>
+          <option value="ovulation">排卵期</option>
+          <option value="luteal">生理前（高温期）</option>
+        </select>
+      </label>
+      <label>気になること（任意）
+        <textarea id="bodylog-note" rows="2"></textarea>
+      </label>
+      <button type="submit" class="btn-primary">記録する</button>
+    </form>
+    <div id="bodylog-history" class="bodylog-history"></div>
+  </div>
+</div>
+
+<!-- ==================== じぶん設計 ==================== -->
+<div id="screen-lifedesign" class="screen">
+  <header class="sub-header">
+    <button class="icon-btn back-btn" data-nav="home">←</button>
+    <h2>じぶん設計</h2>
+    <span class="header-spacer"></span>
+  </header>
+
+  <section class="ld-section">
+    <h3>なりたい自分</h3>
+    <input id="ld-vision" type="text" maxlength="60" placeholder="例：自分の意見をちゃんと言えるようになる" />
+    <button id="btn-save-vision" class="btn-secondary">保存</button>
+  </section>
+
+  <section class="ld-section">
+    <h3>ライフマップ</h3>
+    <p class="ld-hint">カテゴリごとに、なりたい姿と時間軸を軽くメモしよう</p>
+    <div id="ld-map" class="ld-map"></div>
+  </section>
+
+  <section class="ld-section">
+    <h3>なりたい自分からの逆算一言</h3>
+    <p class="ld-hint">なりたい自分とライフマップをもとに、キャラが今できそうな一歩を考えてくれるよ</p>
+    <button id="btn-backcast" class="btn-secondary">一言もらう</button>
+    <div id="backcast-result" class="compare-result"></div>
+  </section>
+
+  <section class="ld-section">
+    <h3>自分ペース宣言</h3>
+    <div id="ld-pace-current" class="ld-pace-current">まだ宣言はありません</div>
+    <button id="btn-pace-start" class="btn-secondary">そうだんで見つける</button>
+  </section>
+
+  <section class="ld-section">
+    <h3>過去の自分と比較</h3>
+    <button id="btn-compare-past" class="btn-secondary">比較してみる</button>
+    <div id="compare-result" class="compare-result"></div>
+  </section>
+
+  <section class="ld-section">
+    <h3>同世代のリアルな声</h3>
+    <button id="btn-show-episode" class="btn-secondary">誰かの話を読む</button>
+    <div id="episode-result" class="episode-result"></div>
+  </section>
+</div>
+
+<!-- ==================== ごほうび ==================== -->
+<div id="screen-rewards" class="screen">
+  <header class="sub-header">
+    <button class="icon-btn back-btn" data-nav="home">←</button>
+    <h2>ごほうび</h2>
+    <span class="header-spacer"></span>
+  </header>
+
+  <div class="reward-summary">
+    <span id="reward-level-badge" class="level-badge">Lv.1</span>
+    <span id="reward-point-count" class="point-count">0 pt</span>
+  </div>
+
+  <h3 class="section-label">バッジ</h3>
+  <div id="badge-grid" class="badge-grid"></div>
+
+  <h3 class="section-label">もらったカード</h3>
+  <div id="card-list" class="card-list"></div>
+</div>
+
+<!-- ==================== 設定（書き出し/取込み） ==================== -->
+<div id="screen-settings" class="screen">
+  <header class="sub-header">
+    <button class="icon-btn back-btn" data-nav="home">←</button>
+    <h2>設定</h2>
+    <span class="header-spacer"></span>
+  </header>
+
+  <section class="settings-section">
+    <h3>データの書き出し・取り込み</h3>
+    <p class="ld-hint">機種変更やアプリの更新に備えて、データをファイルに保存できます。会話や記録はこの端末の中にだけ保存されており、外部には送信されません。</p>
+    <button id="btn-export" class="btn-secondary">📤 書き出す（バックアップ）</button>
+    <button id="btn-import" class="btn-secondary">📥 取り込む（復元）</button>
+    <input id="import-file-input" type="file" accept="application/json" hidden />
+    <p id="settings-message" class="settings-message"></p>
+  </section>
+
+  <section class="settings-section">
+    <h3>AIモデル</h3>
+    <p id="ai-status" class="ld-hint">確認中…</p>
+    <button id="btn-reload-model" class="btn-secondary">モデルを再読込</button>
+  </section>
+
+  <section class="settings-section danger-section">
+    <h3>データの初期化</h3>
+    <p class="ld-hint">すべての記録を削除します。取り消せません。</p>
+    <button id="btn-reset-all" class="btn-danger">すべて削除する</button>
+  </section>
+</div>
+
+<!-- ごほうびカード ポップアップ -->
+<div id="reward-popup" class="reward-popup" hidden>
+  <div class="reward-popup-card">
+    <img id="reward-popup-char" src="assets/ghost.png" alt="キャラクター" />
+    <p id="reward-popup-text"></p>
+    <button id="reward-popup-close" class="btn-primary">とじる</button>
+  </div>
+</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
