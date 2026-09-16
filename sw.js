@@ -2,7 +2,7 @@
 // アプリ本体（HTML/CSS/JS/画像）だけをキャッシュする。
 // AIモデル本体のキャッシュはWebLLM側のCache APIが別途管理するため、ここでは触らない。
 
-const CACHE_NAME = "kokoro-town-shell-v2";
+const CACHE_NAME = "kokoro-town-shell-v3";
 const SHELL_FILES = [
   "./",
   "./index.html",
@@ -42,22 +42,25 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
-  // 同一オリジンのアプリ本体ファイルのみ cache-first。
+  // 同一オリジンのアプリ本体ファイルのみ対象。
   // それ以外（AIモデルのダウンロードなど huggingface.co 等）はそのままネットワークへ通す。
   if (url.origin !== self.location.origin) {
     return;
   }
 
+  // network-first: まずネットワークから最新のファイルを取りにいく。
+  // 開発中で頻繁に更新するため、古いキャッシュがずっと使われ続けてしまう
+  // 問題を避けるために cache-first から方針を変更した。
+  // オフラインなどでネットワークが取れない場合だけ、保存済みキャッシュを使う。
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request).then((res) => {
+    fetch(event.request)
+      .then((res) => {
         if (res.ok && event.request.method === "GET") {
           const resClone = res.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, resClone));
         }
         return res;
-      }).catch(() => cached);
-    })
+      })
+      .catch(() => caches.match(event.request))
   );
 });
