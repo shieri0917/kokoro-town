@@ -2,7 +2,7 @@
 // アプリ本体（HTML/CSS/JS/画像）だけをキャッシュする。
 // AIモデル本体のキャッシュはWebLLM側のCache APIが別途管理するため、ここでは触らない。
 
-const CACHE_NAME = "kokoro-town-shell-v1";
+const CACHE_NAME = "kokoro-town-shell-v2";
 const SHELL_FILES = [
   "./",
   "./index.html",
