@@ -29,6 +29,11 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* hidden属性は必ずdisplay:noneにする（他のCSSでdisplayを指定していても優先させる） */
+[hidden] {
+  display: none !important;
+}
+
 html, body {
   margin: 0;
   padding: 0;
